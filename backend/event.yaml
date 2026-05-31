@@ -1,0 +1,26 @@
+server:
+  port: 8090
+  jwt_secret: "change-me-in-production"
+  public_url: "https://workmate-event.kit-it-koblenz.de"
+
+db:
+  path: "./event.db"
+
+obs:
+  url: "ws://localhost:4455"
+  password: ""
+
+sumup:
+  api_key: ""
+  webhook_secret: ""
+
+tse:
+  device: "/dev/sdb1"
+  mock: true  # false = echte Swissbit USB TSE
+
+# Erste Benutzer (Username:Passwort-Hash per bcrypt)
+# Zum Generieren: htpasswd -bnBC 10 "" password | tr -d ':\n'
+users:
+  - username: "admin"
+    password_hash: "$2a$10$placeholder-set-real-hash"
+    role: "ADMIN"
