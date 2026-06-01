@@ -2,22 +2,23 @@ import { ReactNode } from 'react'
 
 // --- Badge ---
 const statusColors: Record<string, string> = {
-  PLANNING:  'bg-slate-700 text-slate-300',
-  ACTIVE:    'bg-emerald-900 text-emerald-300',
-  COMPLETED: 'bg-blue-900 text-blue-300',
-  CANCELLED: 'bg-red-900 text-red-300',
-  VALID:     'bg-emerald-900 text-emerald-300',
-  SCANNED:   'bg-blue-900 text-blue-300',
-  REFUNDED:  'bg-amber-900 text-amber-300',
-  AVAILABLE: 'bg-emerald-900 text-emerald-300',
-  IN_USE:    'bg-blue-900 text-blue-300',
-  DEFECT:    'bg-red-900 text-red-300',
-  PENDING:   'bg-amber-900 text-amber-300',
-  COMPLETED_TX: 'bg-emerald-900 text-emerald-300',
+  PLANNING:     'bg-[#444]/60 text-[#B3B3B3] border border-[#444]',
+  ACTIVE:       'bg-[#00E676]/15 text-[#00E676] border border-[#00E676]/30',
+  COMPLETED:    'bg-[#0077FF]/15 text-[#0077FF] border border-[#0077FF]/30',
+  CANCELLED:    'bg-red-500/15 text-red-400 border border-red-500/30',
+  VALID:        'bg-[#00E676]/15 text-[#00E676] border border-[#00E676]/30',
+  SCANNED:      'bg-[#0077FF]/15 text-[#0077FF] border border-[#0077FF]/30',
+  REFUNDED:     'bg-[#FFC400]/15 text-[#FFC400] border border-[#FFC400]/30',
+  AVAILABLE:    'bg-[#00E676]/15 text-[#00E676] border border-[#00E676]/30',
+  IN_USE:       'bg-[#0077FF]/15 text-[#0077FF] border border-[#0077FF]/30',
+  DEFECT:       'bg-red-500/15 text-red-400 border border-red-500/30',
+  PENDING:      'bg-[#FFC400]/15 text-[#FFC400] border border-[#FFC400]/30',
+  COMPLETED_TX: 'bg-[#00E676]/15 text-[#00E676] border border-[#00E676]/30',
+  ACTIVE_STAFF: 'bg-[#00E676]/15 text-[#00E676] border border-[#00E676]/30',
 }
 
 export function Badge({ label }: { label: string }) {
-  const cls = statusColors[label] ?? 'bg-slate-700 text-slate-300'
+  const cls = statusColors[label] ?? 'bg-[#444]/60 text-[#B3B3B3] border border-[#444]'
   return <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${cls}`}>{label}</span>
 }
 
@@ -27,21 +28,21 @@ export function StatCard({ label, value, sub, color = 'text-white' }: {
 }) {
   return (
     <div className="card flex flex-col gap-1">
-      <span className="text-xs text-slate-400 uppercase tracking-wider">{label}</span>
+      <span className="text-xs text-wm-muted uppercase tracking-wider font-semibold">{label}</span>
       <span className={`text-2xl font-bold ${color}`}>{value}</span>
-      {sub && <span className="text-xs text-slate-500">{sub}</span>}
+      {sub && <span className="text-xs text-[#555]">{sub}</span>}
     </div>
   )
 }
 
 // --- ProgressBar ---
-export function ProgressBar({ value, max, color = 'bg-blue-500' }: {
+export function ProgressBar({ value, max, color = 'bg-wm-green' }: {
   value: number; max: number; color?: string
 }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0
   return (
-    <div className="w-full bg-slate-700 rounded-full h-2">
-      <div className={`h-2 rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
+    <div className="w-full bg-wm-border rounded-full h-1.5">
+      <div className={`h-1.5 rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
     </div>
   )
 }
@@ -57,9 +58,9 @@ export function Spinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 // --- Empty state ---
 export function Empty({ icon, message }: { icon?: ReactNode; message: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 py-12 text-slate-500">
-      {icon && <div className="text-4xl opacity-40">{icon}</div>}
-      <p>{message}</p>
+    <div className="flex flex-col items-center gap-3 py-12 text-wm-muted/50">
+      {icon && <div className="text-4xl opacity-30">{icon}</div>}
+      <p className="text-sm">{message}</p>
     </div>
   )
 }
@@ -77,9 +78,9 @@ export function SectionHeader({ title, action }: { title: string; action?: React
 // --- Alert ---
 export function Alert({ type, message }: { type: 'success' | 'error' | 'info'; message: string }) {
   const styles = {
-    success: 'bg-emerald-900/50 border-emerald-600 text-emerald-300',
-    error:   'bg-red-900/50 border-red-600 text-red-300',
-    info:    'bg-blue-900/50 border-blue-600 text-blue-300',
+    success: 'bg-[#00E676]/10 border-[#00E676]/30 text-[#00E676]',
+    error:   'bg-red-500/10 border-red-500/30 text-red-400',
+    info:    'bg-[#0077FF]/10 border-[#0077FF]/30 text-[#0077FF]',
   }[type]
   return (
     <div className={`border rounded-lg px-4 py-3 text-sm ${styles}`}>{message}</div>

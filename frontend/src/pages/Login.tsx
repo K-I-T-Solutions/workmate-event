@@ -25,14 +25,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-wm-bg flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
-            WE
-          </div>
-          <h1 className="text-2xl font-bold text-slate-100">Workmate Event</h1>
-          <p className="text-slate-500 text-sm mt-1">K.I.T. Solutions</p>
+        {/* Sign mit Glow */}
+        <div className="flex flex-col items-center mb-8">
+          <img src="/sign-event.png" alt="WORKMATE EVENT" className="h-20 w-auto mb-4" />
+          <p className="text-wm-muted text-sm tracking-wide">K.I.T. Solutions</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card space-y-4">

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/browser'
+import { BrowserMultiFormatReader } from '@zxing/browser'
+import type { IScannerControls } from '@zxing/browser'
+import { NotFoundException } from '@zxing/library'
 import { events, tickets, Event, Ticket } from '../api/client'
 import { Badge, Spinner, Alert } from '../components/ui'
 import { Camera, CameraOff } from 'lucide-react'
@@ -23,7 +25,7 @@ export default function Scanner() {
   const [result, setResult] = useState<ScanResult | null>(null)
   const [history, setHistory] = useState<Array<{ qr: string; result: ScanResult; time: string }>>([])
   const videoRef = useRef<HTMLVideoElement>(null)
-  const readerRef = useRef<BrowserMultiFormatReader | null>(null)
+  const controlsRef = useRef<IScannerControls | null>(null)
   const lastScan = useRef<string>('')
   const cooldownRef = useRef(false)
 
@@ -38,8 +40,8 @@ export default function Scanner() {
   }, [params])
 
   const stopScanner = useCallback(() => {
-    readerRef.current?.reset()
-    readerRef.current = null
+    controlsRef.current?.stop()
+    controlsRef.current = null
     setScanning(false)
   }, [])
 
@@ -71,16 +73,21 @@ export default function Scanner() {
 
   const startScanner = useCallback(async () => {
     if (!videoRef.current) return
+    if (!navigator.mediaDevices || !window.isSecureContext) {
+      setResult({ ok: false, message: 'Kamera benötigt HTTPS. Bitte https:// verwenden.' })
+      return
+    }
     const reader = new BrowserMultiFormatReader()
-    readerRef.current = reader
     setScanning(true)
     try {
-      await reader.decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
+      const controls = await reader.decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
         if (res) handleDecode(res.getText())
         if (err && !(err instanceof NotFoundException)) console.error(err)
       })
-    } catch (e) {
-      console.error('Kamera-Fehler:', e)
+      controlsRef.current = controls
+    } catch (e: unknown) {
+      const msg = (e as Error).message ?? String(e)
+      setResult({ ok: false, message: `Kamera-Fehler: ${msg}` })
       setScanning(false)
     }
   }, [handleDecode])

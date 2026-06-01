@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig({
   plugins: [
     react(),
+    basicSsl(),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg}'] },
@@ -12,8 +14,8 @@ export default defineConfig({
         name: 'Workmate Event',
         short_name: 'WM Event',
         description: 'K.I.T. Solutions – Event Management',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#232223',
+        background_color: '#232223',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
@@ -27,9 +29,9 @@ export default defineConfig({
   server: {
     port: 3090,
     proxy: {
-      '/api': { target: 'http://localhost:8090', changeOrigin: true },
-      '/ws':  { target: 'ws://localhost:8090',  ws: true },
-      '/program': { target: 'http://localhost:8090', changeOrigin: true }
+      '/api': { target: 'http://localhost:8091', changeOrigin: true },
+      '/ws':  { target: 'ws://localhost:8091',  ws: true },
+      '/program': { target: 'http://localhost:8091', changeOrigin: true }
     }
   }
 })

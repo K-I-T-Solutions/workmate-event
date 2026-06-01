@@ -20,13 +20,15 @@ func NewRouter(cfg *config.Config, db *sql.DB, hub *ws.Hub, tseSvc tse.Service) 
 	r.Use(middleware.Recoverer)
 	r.Use(corsMiddleware)
 
-	authH := handlers.NewAuthHandler(cfg)
-	eventH := handlers.NewEventHandler(db)
+	authH   := handlers.NewAuthHandler(cfg)
+	eventH  := handlers.NewEventHandler(db)
 	ticketH := handlers.NewTicketHandler(db, hub)
-	txH := handlers.NewTransactionHandler(db, hub, tseSvc, cfg)
-	equipH := handlers.NewEquipmentHandler(db, hub)
-	staffH := handlers.NewStaffHandler(db, hub)
-	progH := handlers.NewProgramHandler(db, cfg)
+	txH     := handlers.NewTransactionHandler(db, hub, tseSvc, cfg)
+	equipH  := handlers.NewEquipmentHandler(db, hub)
+	staffH  := handlers.NewStaffHandler(db, hub)
+	progH   := handlers.NewProgramHandler(db, cfg)
+	streamH := handlers.NewStreamHandler(cfg, hub)
+	reportH := handlers.NewReportHandler(db)
 
 	// Public
 	r.Post("/api/auth/login", authH.Login)
@@ -78,6 +80,16 @@ func NewRouter(cfg *config.Config, db *sql.DB, hub *ws.Hub, tseSvc tse.Service) 
 		r.Get("/api/events/{id}/program", progH.Get)
 		r.Post("/api/events/{id}/program", progH.Upsert)
 		r.Get("/api/events/{id}/program/qr", progH.QRCode)
+
+		// Livestream / OBS
+		r.Get("/api/events/{id}/stream/status", streamH.Status)
+		r.Post("/api/events/{id}/stream/start", streamH.Start)
+		r.Post("/api/events/{id}/stream/stop", streamH.Stop)
+		r.Get("/api/events/{id}/stream/scenes", streamH.Scenes)
+		r.Post("/api/events/{id}/stream/scene", streamH.SetScene)
+
+		// Bericht
+		r.Get("/api/events/{id}/report/pdf", reportH.PDF)
 	})
 
 	return r

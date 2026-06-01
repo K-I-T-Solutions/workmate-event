@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8091
   jwt_secret: "change-me-in-production"
   public_url: "https://workmate-event.kit-it-koblenz.de"
 
@@ -22,5 +22,5 @@ tse:
 # Zum Generieren: htpasswd -bnBC 10 "" password | tr -d ':\n'
 users:
   - username: "admin"
-    password_hash: "$2a$10$placeholder-set-real-hash"
+    password_hash: "$2a$10$q18dm5tUT6CTuMkF8u9R3.GacmGn9KfPLBGWKNZmNs82QgudP0HnC"
     role: "ADMIN"

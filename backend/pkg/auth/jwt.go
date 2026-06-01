@@ -54,12 +54,18 @@ func ValidateToken(tokenStr, secret string) (*Claims, error) {
 func Middleware(secret string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			header := r.Header.Get("Authorization")
-			if !strings.HasPrefix(header, "Bearer ") {
+			// Bearer-Header oder ?token= Query-Parameter akzeptieren (für Download-Links)
+			tokenStr := ""
+			if header := r.Header.Get("Authorization"); strings.HasPrefix(header, "Bearer ") {
+				tokenStr = strings.TrimPrefix(header, "Bearer ")
+			} else if q := r.URL.Query().Get("token"); q != "" {
+				tokenStr = q
+			}
+			if tokenStr == "" {
 				http.Error(w, `{"error":"unauthorized"}`, http.StatusUnauthorized)
 				return
 			}
-			claims, err := ValidateToken(strings.TrimPrefix(header, "Bearer "), secret)
+			claims, err := ValidateToken(tokenStr, secret)
 			if err != nil {
 				http.Error(w, `{"error":"unauthorized"}`, http.StatusUnauthorized)
 				return

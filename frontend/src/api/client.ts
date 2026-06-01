@@ -225,3 +225,38 @@ export const program = {
   upsert: (eventId: string, items: ProgramItem[]) => post<EventProgram>(`/api/events/${eventId}/program`, { items }),
   qrUrl:  (eventId: string) => `/api/events/${eventId}/program/qr`,
 }
+
+// --- Stream (OBS) ---
+
+export interface StreamStatus {
+  outputActive: boolean
+  outputReconnecting: boolean
+  outputTimecode: string
+  outputDuration: number
+  outputBytes: number
+  outputSkippedFrames: number
+  outputTotalFrames: number
+}
+
+export interface Scene {
+  sceneName: string
+  sceneIndex: number
+}
+
+export interface SceneList {
+  currentProgramSceneName: string
+  scenes: Scene[]
+}
+
+export const stream = {
+  status:   (eventId: string) => get<{ configured: boolean; status: StreamStatus | null }>(`/api/events/${eventId}/stream/status`),
+  start:    (eventId: string) => post<{ started: boolean }>(`/api/events/${eventId}/stream/start`, {}),
+  stop:     (eventId: string) => post<{ stopped: boolean }>(`/api/events/${eventId}/stream/stop`, {}),
+  scenes:   (eventId: string) => get<SceneList & { configured?: boolean }>(`/api/events/${eventId}/stream/scenes`),
+  setScene: (eventId: string, scene: string) => post<{ scene: string }>(`/api/events/${eventId}/stream/scene`, { scene }),
+}
+
+export const reportPdfUrl = (eventId: string) => {
+  const token = localStorage.getItem('token') ?? ''
+  return `/api/events/${eventId}/report/pdf?token=${encodeURIComponent(token)}`
+}
