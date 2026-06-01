@@ -1,0 +1,4 @@
+event.db
+event.db-shm
+event.db-wal
+*.db

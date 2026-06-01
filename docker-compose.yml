@@ -1,0 +1,36 @@
+services:
+
+  workmate-event-backend:
+    build: ./backend
+    container_name: workmate-event-backend
+    restart: unless-stopped
+    ports:
+      - "8091:8091"
+    volumes:
+      - ./data/event.db:/app/event.db
+      - ./backend/event.yaml:/app/event.yaml:ro
+      # Swissbit USB TSE – auskommentieren wenn kein TSE angeschlossen
+      # - /dev/bus/usb:/dev/bus/usb
+    networks:
+      - core_network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8091/api/events"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  workmate-event-frontend:
+    build: ./frontend
+    container_name: workmate-event-frontend
+    restart: unless-stopped
+    ports:
+      - "3090:3090"
+    depends_on:
+      workmate-event-backend:
+        condition: service_healthy
+    networks:
+      - core_network
+
+networks:
+  core_network:
+    external: true

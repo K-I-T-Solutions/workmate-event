@@ -15,3 +15,5 @@ frontend/dist/
 
 # OS
 .DS_Store
+data/.gitkeep
+data/event.db

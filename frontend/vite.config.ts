@@ -1,12 +1,17 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
-import basicSsl from '@vitejs/plugin-basic-ssl'
 
-export default defineConfig({
+async function devPlugins(): Promise<Plugin[]> {
+  if (process.env.NODE_ENV === 'production') return []
+  const { default: basicSsl } = await import('@vitejs/plugin-basic-ssl')
+  return [basicSsl() as Plugin]
+}
+
+export default defineConfig(async () => ({
   plugins: [
     react(),
-    basicSsl(),
+    ...(await devPlugins()),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg}'] },
@@ -34,4 +39,4 @@ export default defineConfig({
       '/program': { target: 'http://localhost:8091', changeOrigin: true }
     }
   }
-})
+}))
